@@ -1,7 +1,7 @@
 # AI Final Project
 
 ## Algorithm
-- using Minimax alpha-beta pruning and add the effection of depth
+- Using Minimax alpha-beta pruning and add the effection of depth
 
 ## Feature
 - 3 game Modes (human-human, human-ai, ai-ai)
@@ -10,5 +10,3 @@
 
 ## Operation
 - Run the main.py file
-
-
