@@ -29,7 +29,6 @@ def humanPlay(board, player):
 
   # dradBoard
   board.drawBoard()
-  board.printBoard()
 
   # check win
   if board.gameOver([player], WIN_LINE):
@@ -55,7 +54,6 @@ def aiPlay(board, player, depth=5):
 
   # dradBoard
   board.drawBoard()
-  board.printBoard()
 
   # check win
   if board.gameOver([player], WIN_LINE):

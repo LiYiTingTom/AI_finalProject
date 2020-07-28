@@ -111,6 +111,7 @@ class Board():
         elif self.board[i][j] == 2: printRed("● ")
         else: print(" ▢ ",end="")
       print()
+    print()
 
   def copyBoard(self):
     newBoard = Board(self.width, self.height)
@@ -218,6 +219,8 @@ class Board():
 
     if self.countSeq(oppo, i+1) * scrList[i] > 0:
       return float('-inf')
+    elif self.countSeq(player, i+1) * scrList[i] > 0:
+      return float('inf')
     else:
       return playerScr - oppoScr
 
