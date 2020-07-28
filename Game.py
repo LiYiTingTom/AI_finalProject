@@ -1,161 +1,181 @@
-from Board import Board 
 from random import shuffle
+from Board import Board
 
 BOARD_WIDTH = 7
 BOARD_HEIGHT = 6
 WIN_LINE = 4
-SCR_LIST = {  
-  2:9,
-  3:999,
-  4:999999
+SCR_LIST = {
+    2:9,
+    3:999,
+    4:999999
 }
 
 def humanPlay(board, player):
-  while True:
-    pos = input(f"\nplayer {player} input: ")
+    """ human player movement
 
-    # Check input validability
-    try:
-      pos = int(pos)
-      if pos in board.getValCols():
-        if board.isValMov(pos): break
+        @Retrun Win=<bool>
+    """
+    while True:
+        pos = input(f"\nplayer {player} input: ")
 
-    except ValueError:
-      pass
-    print("Invalid Value")
+        # Check input validability
+        try:
+            pos = int(pos)
+            if pos in board.getValCols():
+                if board.isValMov(pos): break
 
-  # do movement
-  board.doMov(pos, player)
+        except ValueError:
+            pass
+        print("Invalid Value")
 
-  # dradBoard
-  board.drawBoard()
+    # do movement
+    board.doMov(pos, player)
 
-  # check win
-  if board.gameOver([player], WIN_LINE):
-    print(f"Human Player {player} Won !")
-    board.printBoard()
-    board.winner = 'human'
-    return False
+    # dradBoard
+    board.drawBoard()
 
-  # check draw
-  if board.draw():
-    board.winner = 'Draw'
-    print("Draw")
-    return False
+    # check win
+    if board.gameOver([player], WIN_LINE):
+        print(f"Human Player {player} Won !")
+        board.printBoard()
+        board.winner = 'human'
+        return False
 
-  # next player
-  return True
+    # check draw
+    if board.draw():
+        board.winner = 'Draw'
+        print("Draw")
+        return False
+
+    # next player
+    return True
 
 
 def aiPlay(board, player, depth=5):
-  # do alpha-beta purnning
-  pos = minmaxAB(board, depth, player)
-  board.doMov(pos, player)
+    """ ai player movement
 
-  # dradBoard
-  board.drawBoard()
+        @Retrun Win=<bool>
+    """
+    # do alpha-beta purnning
+    pos = minmaxAB(board, depth, player)
+    board.doMov(pos, player)
 
-  # check win
-  if board.gameOver([player], WIN_LINE):
-    print(f"AI Player {player} Won !")
-    board.printBoard()
-    board.winner = 'ai'
-    return False
+    # dradBoard
+    board.drawBoard()
 
-  # check draw
-  if board.draw():
-    board.winner = 'Draw'
-    print("Draw")
-    return False
+    # check win
+    if board.gameOver([player], WIN_LINE):
+        print(f"AI Player {player} Won !")
+        board.printBoard()
+        board.winner = 'ai'
+        return False
 
-  # next player
-  return True
+    # check draw
+    if board.draw():
+        board.winner = 'Draw'
+        print("Draw")
+        return False
+
+    # next player
+    return True
 
 def minmaxAB(board, depth, player):
-  # get valid moves
-  validMovs = board.getValCols()
-  shuffle(validMovs)
-  if sum(board.board[board.getHeight()-1]) < 2:
-    bestMov = int(board.getWidth()/2)
-    validMovs[0], validMovs[bestMov] = validMovs[bestMov], validMovs[0]
-  bestScr = float("-inf")
+    """ do minmax alpha-beta
 
-  # init alpha and beta
-  alpha =  float("-inf")
-  beta = float("inf")
+        @Return best_mov=<int>
+    """
+    # get valid moves
+    validMovs = board.getValCols()
+    shuffle(validMovs)
+    if sum(board.board[board.getHeight()-1]) < 2:
+        bestMov = int(board.getWidth()/2)
+        validMovs[0], validMovs[bestMov] = validMovs[bestMov], validMovs[0]
+    bestScr = float("-inf")
 
-  if player == 1: oppo = 2
-  else: oppo = 1
+    # init alpha and beta
+    alpha = float("-inf")
+    beta = float("inf")
 
-  # Finding
-  for mov in validMovs:
+    if player == 1: oppo = 2
+    else: oppo = 1
 
-    # copy current board to temp board
-    tmpBoard = board.copyBoard()
-    # do the move
-    tmpBoard.doMov(mov, player)
+    # Finding
+    for mov in validMovs:
 
-    # call min on tmp board
-    boardScr = minBeta(tmpBoard, depth-1, alpha, beta, player, oppo)
+        # copy current board to temp board
+        tmpBoard = board.copyBoard()
+        # do the move
+        tmpBoard.doMov(mov, player)
 
-    # update best board
-    if boardScr > bestScr:
-      bestScr = boardScr
-      bestMov = mov
+        # call min on tmp board
+        boardScr = minBeta(tmpBoard, depth-1, alpha, beta, player, oppo)
 
-  return bestMov
+        # update best board
+        if boardScr > bestScr:
+            bestScr = boardScr
+            bestMov = mov
+
+    return bestMov
 
 
 def minBeta(board, depth, a, b, player, oppo):
-  validMovs = []
-  validMovs = board.getValCols()
+    """ min beta
 
-  # check Game Over
-  if depth == 0 or len(validMovs) == 0 or board.gameOver((1, 2), WIN_LINE):
-    return board.utiVal(player, WIN_LINE, SCR_LIST)*depth
+        @Return beta=<int>
+    """
+    validMovs = []
+    validMovs = board.getValCols()
 
-  beta = b
+    # check Game Over
+    if depth == 0 or len(validMovs) == 0 or board.gameOver((1, 2), WIN_LINE):
+        return board.utiVal(player, WIN_LINE, SCR_LIST)*depth
 
-  # if end of tree evaluate scr
-  for mov in validMovs:
-    boardScr = float("inf")
+    beta = b
 
-    # else keep down tree, until a, b met 
-    if a < beta:
-      # copy current board to temp board
-      tmpBoard = board.copyBoard()
-  
-      # do move
-      tmpBoard.doMov(mov, oppo)
-  
-      # call maxAlpha on tmp board
-      boardScr = maxAlpha(tmpBoard, depth-1, a, beta, player, oppo)
+    # if end of tree evaluate scr
+    for mov in validMovs:
+        boardScr = float("inf")
 
-    if boardScr < beta:
-      beta = boardScr
+        # else keep down tree, until a, b met
+        if a < beta:
+            # copy current board to temp board
+            tmpBoard = board.copyBoard()
 
-  return beta
+            # do move
+            tmpBoard.doMov(mov, oppo)
+
+            # call maxAlpha on tmp board
+            boardScr = maxAlpha(tmpBoard, depth-1, a, beta, player, oppo)
+
+        if boardScr < beta:
+            beta = boardScr
+
+    return beta
 
 def maxAlpha(board, depth, a, b, player, oppo):
-  validMovs = []
-  validMovs = board.getValCols()
+    """ max alpha
 
-  # check Game Over
-  if depth == 0 or len(validMovs) == 0 or board.gameOver((1, 2), WIN_LINE):
-    return board.utiVal(player, WIN_LINE, SCR_LIST)*depth
+        @Return alpha=<int>
+    """
+    validMovs = []
+    validMovs = board.getValCols()
 
-  alpha = a
-  # if end of tree, evalute scr
-  for mov in validMovs:
-    boardScr = float("-inf")
+    # check Game Over
+    if depth == 0 or len(validMovs) == 0 or board.gameOver((1, 2), WIN_LINE):
+        return board.utiVal(player, WIN_LINE, SCR_LIST)*depth
 
-    if alpha < b:
-      tmpBoard = board.copyBoard()
-      tmpBoard.doMov(mov, player)
-      boardScr = minBeta(tmpBoard, depth-1, alpha, b, player, oppo)
+    alpha = a
+    # if end of tree, evalute scr
+    for mov in validMovs:
+        boardScr = float("-inf")
+
+        if alpha < b:
+            tmpBoard = board.copyBoard()
+            tmpBoard.doMov(mov, player)
+            boardScr = minBeta(tmpBoard, depth-1, alpha, b, player, oppo)
 
 
-    if boardScr > alpha:
-      alpha = boardScr
+        if boardScr > alpha:
+            alpha = boardScr
 
-  return alpha
+    return alpha
