@@ -33,7 +33,8 @@ def main():
         rou = 0
         board.drawBoard()
         # Human - Human
-        while humanPlay(board, 1) and humanPlay(board, 2):
+        while humanPlay(board, 1) \
+          and humanPlay(board, 2):
             rou += 1
             print(f"round {round}")
 
@@ -48,11 +49,13 @@ def main():
 
             if player1_level == 1:
                 board.drawBoard()
-                while humanPlay(board, 1) and aiPlay(board, 2, times):
+                while humanPlay(board, 1) \
+                  and aiPlay(board, 2, times):
                     rou += 1
                     print(f"round {rou}")
             else:
-                while aiPlay(board, 1, times) and humanPlay(board, 2):
+                while aiPlay(board, 1, times) \
+                  and humanPlay(board, 2):
                     rou += 1
                     print(f"round {rou}")
         else:
@@ -63,11 +66,13 @@ def main():
                 player1_level = checkInputIsNum("Select your turn (1, 2) : ", 3)
                 if player1_level == 1:
                     board.drawBoard()
-                    while humanPlay(board, 1) and aiPlay(board, 2, times):
+                    while humanPlay(board, 1) \
+                      and aiPlay(board, 2, times):
                         rou += 1
                         print(f"round {rou}")
                 else:
-                    while aiPlay(board, 1, times) and humanPlay(board, 2):
+                    while aiPlay(board, 1, times) \
+                      and humanPlay(board, 2):
                         rou += 1
                         print(f"round {rou}")
                 if board.winner == 'human':
@@ -79,9 +84,11 @@ def main():
         player2_level = checkInputIsNum("Please select the difficality (0-5) for AI2: ", 6) + 2
 
         rou = 0
-        while aiPlay(board, 1, player1_level) and aiPlay(board, 2, player2_level):
+        while aiPlay(board, 1, player1_level) \
+          and aiPlay(board, 2, player2_level):
             rou += 1
             print(f"round {rou}")
+
 
 
 if __name__ == '__main__':

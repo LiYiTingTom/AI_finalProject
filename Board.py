@@ -4,13 +4,11 @@ def printYello(arg): print("\033[93m {}\033[00m" .format(arg), end="")
 def printBlue(arg): print("\033[92m {}\033[00m" .format(arg), end="")
 
 class Board():
-
     def __init__(self, width, height):
         self.board = [[0 for i in range(width)] for j in range(height)]
         self._width = width
         self._height = height
         self.winner = 'human'
-
 
     @property
     def width(self):
@@ -30,6 +28,8 @@ class Board():
     def isNotFull(self, col):
         return True if self.board[0][col] == 0 else False
 
+
+
     # get top row
     def getTopRow(self, col):
         for row in range(self._height-1, -1, -1):
@@ -37,12 +37,16 @@ class Board():
                 return row
         return False
 
+
+
     # check col and row validability
     def isVal(self, col, row):
         if col in range(self._width) \
         and row in range(self._height):
             return True
         return False
+
+
 
     # get valid columns in board
     def getValCols(self):
@@ -53,6 +57,8 @@ class Board():
 
         return valCols
 
+
+
     # do player move
     def doMov(self, col, player):
         for row in range(self._height-1, -1, -1):
@@ -62,6 +68,8 @@ class Board():
 
         return False
 
+
+
     # ckeck move's validability
     def isValMov(self, col):
         for row in range(self._height):
@@ -69,6 +77,8 @@ class Board():
                 return True
 
         return False
+
+
 
     # check winner
     def checkWin(self, player, line):
@@ -138,6 +148,8 @@ class Board():
             print()
         print()
 
+
+
     def copyBoard(self):
         newBoard = Board(self._width, self._height)
         for i in range(self._height):
@@ -161,8 +173,6 @@ class Board():
 
             return 1 if count >= line else 0
 
-
-
         def horizontalSeq(row, col):
             """Return 1 if it found a horizontal sequence with the required line
             """
@@ -174,8 +184,6 @@ class Board():
                     break
 
             return 1 if count >= line else 0
-
-
 
         def negDiagonalSeq(row, col):
             """Return 1 if it found a negative diagonal sequence with the required line
@@ -192,8 +200,6 @@ class Board():
                 colIndex += 1 # increment column when row is incremented
 
             return 1 if count >= line else 0
-
-
 
         def posDiagonalSeq(row, col):
             """Return 1 if it found a positive diagonal sequence with the required line
@@ -251,6 +257,8 @@ class Board():
             return float('inf')
         else:
             return playerScr - oppoScr
+
+
 
     def gameOver(self, players, WIN_LINE):
         totalScr = 0

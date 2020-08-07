@@ -1,4 +1,5 @@
 from random import shuffle
+
 from Board import Board
 
 BOARD_WIDTH = 7
@@ -52,6 +53,7 @@ def humanPlay(board, player):
     return True
 
 
+
 def aiPlay(board, player, depth=5):
     """ ai player movement
 
@@ -79,6 +81,8 @@ def aiPlay(board, player, depth=5):
 
     # next player
     return True
+
+
 
 def minmaxAB(board, depth, player):
     """ do minmax alpha-beta
@@ -118,6 +122,7 @@ def minmaxAB(board, depth, player):
     return bestMov
 
 
+
 def minBeta(board, depth, a, b, player, oppo):
     """ min beta
 
@@ -153,6 +158,8 @@ def minBeta(board, depth, a, b, player, oppo):
             beta = boardScr
 
     return beta
+
+
 
 def maxAlpha(board, depth, a, b, player, oppo):
     """ max alpha
