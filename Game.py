@@ -22,7 +22,8 @@ def humanPlay(board, player):
         try:
             pos = int(pos)
             if pos in board.getValCols():
-                if board.isValMov(pos): break
+                if board.isValMov(pos):
+                    break
 
         except ValueError:
             pass
@@ -87,8 +88,8 @@ def minmaxAB(board, depth, player):
     # get valid moves
     validMovs = board.getValCols()
     shuffle(validMovs)
-    if sum(board.board[board.getHeight()-1]) < 2:
-        bestMov = int(board.getWidth()/2)
+    if sum(board.board[board.height-1]) < 2:
+        bestMov = int(board.width/2)
         validMovs[0], validMovs[bestMov] = validMovs[bestMov], validMovs[0]
     bestScr = float("-inf")
 
@@ -96,8 +97,7 @@ def minmaxAB(board, depth, player):
     alpha = float("-inf")
     beta = float("inf")
 
-    if player == 1: oppo = 2
-    else: oppo = 1
+    oppo = 2 if player == 1 else 1
 
     # Finding
     for mov in validMovs:
@@ -127,7 +127,9 @@ def minBeta(board, depth, a, b, player, oppo):
     validMovs = board.getValCols()
 
     # check Game Over
-    if depth == 0 or len(validMovs) == 0 or board.gameOver((1, 2), WIN_LINE):
+    if depth == 0 \
+    or len(validMovs) == 0 \
+    or board.gameOver((1, 2), WIN_LINE):
         return board.utiVal(player, WIN_LINE, SCR_LIST)*depth
 
     beta = b
@@ -161,7 +163,9 @@ def maxAlpha(board, depth, a, b, player, oppo):
     validMovs = board.getValCols()
 
     # check Game Over
-    if depth == 0 or len(validMovs) == 0 or board.gameOver((1, 2), WIN_LINE):
+    if depth == 0 \
+    or len(validMovs) == 0 \
+    or board.gameOver((1, 2), WIN_LINE):
         return board.utiVal(player, WIN_LINE, SCR_LIST)*depth
 
     alpha = a
