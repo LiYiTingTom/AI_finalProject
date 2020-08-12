@@ -21,9 +21,7 @@ def checkInputIsNum(words, ran):
 
 def main():
     """ MAIN """
-    mod = checkInputIsNum("Game mode (0: human-human, \
-                          1: human-computer, \
-                          2: computer-computer): ", 3)
+    mod = checkInputIsNum("Game mode (0: human-human, 1: human-computer, 2: computer-computer): ", 3)
 
     # board init
     board = Board(BOARD_WIDTH, BOARD_HEIGHT)
