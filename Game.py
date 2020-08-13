@@ -1,7 +1,12 @@
+import sys
+sys.modules['__main__'].__file__='ipython'
+import os
+import multiprocessing as mp
 from random import shuffle
 
 from Board import Board
 
+CORE_NUM = 4
 BOARD_WIDTH = 7
 BOARD_HEIGHT = 6
 WIN_LINE = 4
@@ -23,8 +28,7 @@ def humanPlay(board, player):
         try:
             pos = int(pos)
             if pos in board.getValCols():
-                if board.isValMov(pos):
-                    break
+                if board.isValMov(pos): break
 
         except ValueError:
             pass
@@ -51,7 +55,6 @@ def humanPlay(board, player):
 
     # next player
     return True
-
 
 
 def aiPlay(board, player, depth=5):
@@ -82,8 +85,6 @@ def aiPlay(board, player, depth=5):
     # next player
     return True
 
-
-
 def minmaxAB(board, depth, player):
     """ do minmax alpha-beta
 
@@ -101,7 +102,12 @@ def minmaxAB(board, depth, player):
     alpha = float("-inf")
     beta = float("inf")
 
-    oppo = 2 if player == 1 else 1
+    if player == 1: oppo = 2
+    else: oppo = 1
+
+#    pool = mp.Pool()
+    job_args_list = []
+    boardScr_tup_list = []
 
     # Finding
     for mov in validMovs:
@@ -111,23 +117,39 @@ def minmaxAB(board, depth, player):
         # do the move
         tmpBoard.doMov(mov, player)
 
-        # call min on tmp board
-        boardScr = minBeta(tmpBoard, depth-1, alpha, beta, player, oppo)
+        job_args_list.append([tmpBoard, depth-1, alpha, beta, player, oppo, mov])
 
-        # update best board
-        if boardScr > bestScr:
-            bestScr = boardScr
-            bestMov = mov
+#    for args in job_args_list:
+#        # call min on tmp board
+#        boardScr_tup_list.append(minBeta(args))
+#    boardScr_tup_list.sort(key=lambda tup: tup[0])
+#
+#    print(boardScr_tup_list)
+#    bestMov = boardScr_tup_list[0][1]
+
+    boardScr_tup_list_p = pool.map(minBeta, job_args_list)
+
+    boardScr_tup_list_p.sort(key=lambda tup: tup[0])
+
+    print(boardScr_tup_list_p)
+    bestMov = boardScr_tup_list_p[-1][1]
+
+#    global test_times
+#    test_times += 1
+#    if test_times > 50:
+#        os.sys.exit()
 
     return bestMov
 
 
 
-def minBeta(board, depth, a, b, player, oppo):
+#def minBeta(board, depth, a, b, player, oppo):
+def minBeta(*args):
     """ min beta
 
         @Return beta=<int>
     """
+    board, depth, a, b, player, oppo, mov_o = args[0]
     validMovs = []
     validMovs = board.getValCols()
 
@@ -135,7 +157,7 @@ def minBeta(board, depth, a, b, player, oppo):
     if depth == 0 \
     or len(validMovs) == 0 \
     or board.gameOver((1, 2), WIN_LINE):
-        return board.utiVal(player, WIN_LINE, SCR_LIST)*depth
+        return board.utiVal(player, WIN_LINE, SCR_LIST)*depth, mov_o
 
     beta = b
 
@@ -152,20 +174,20 @@ def minBeta(board, depth, a, b, player, oppo):
             tmpBoard.doMov(mov, oppo)
 
             # call maxAlpha on tmp board
-            boardScr = maxAlpha(tmpBoard, depth-1, a, beta, player, oppo)
+            boardScr = maxAlpha([tmpBoard, depth-1, a, beta, player, oppo, mov_o])[0]
 
         if boardScr < beta:
             beta = boardScr
 
-    return beta
+    return beta, mov_o
 
-
-
-def maxAlpha(board, depth, a, b, player, oppo):
+#def maxAlpha(board, depth, a, b, player, oppo):
+def maxAlpha(*args):
     """ max alpha
 
         @Return alpha=<int>
     """
+    board, depth, a, b, player, oppo, mov_o = args[0]
     validMovs = []
     validMovs = board.getValCols()
 
@@ -173,9 +195,10 @@ def maxAlpha(board, depth, a, b, player, oppo):
     if depth == 0 \
     or len(validMovs) == 0 \
     or board.gameOver((1, 2), WIN_LINE):
-        return board.utiVal(player, WIN_LINE, SCR_LIST)*depth
+        return board.utiVal(player, WIN_LINE, SCR_LIST)*depth, mov_o
 
     alpha = a
+
     # if end of tree, evalute scr
     for mov in validMovs:
         boardScr = float("-inf")
@@ -183,10 +206,10 @@ def maxAlpha(board, depth, a, b, player, oppo):
         if alpha < b:
             tmpBoard = board.copyBoard()
             tmpBoard.doMov(mov, player)
-            boardScr = minBeta(tmpBoard, depth-1, alpha, b, player, oppo)
+            boardScr = minBeta([tmpBoard, depth-1, alpha, b, player, oppo, mov_o])[0]
 
 
         if boardScr > alpha:
             alpha = boardScr
 
-    return alpha
+    return alpha, mov_o
