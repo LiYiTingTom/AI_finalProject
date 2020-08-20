@@ -1,10 +1,13 @@
 import sys
 import os
-import multiprocessing as mp
 from random import shuffle
+
+import ray
 
 from Board import Board
 
+ray_flag = False
+test_times = 0
 CORE_NUM = 4
 BOARD_WIDTH = 7
 BOARD_HEIGHT = 6
@@ -104,6 +107,11 @@ def minmaxAB(board, depth, player):
     if player == 1: oppo = 2
     else: oppo = 1
 
+    global ray_flag
+    if not ray_flag:
+        ray.init(num_cpus=4)
+        ray_flag = True
+
     job_args_list = []
     boardScr_tup_list = []
 
@@ -116,33 +124,21 @@ def minmaxAB(board, depth, player):
         tmpBoard.doMov(mov, player)
         job_args_list.append([tmpBoard, depth-1, alpha, beta, player, oppo, mov])
 
-#    for args in job_args_list:
-#        # call min on tmp board
-#        boardScr_tup_list.append(minBeta(args))
-#    boardScr_tup_list.sort(key=lambda tup: tup[0], reverse=True)
-#
-#    print(boardScr_tup_list)
-#    bestMov = boardScr_tup_list[0][1]
+    boardScr_tup_list_p = []
 
-    pool = mp.Pool()
-
-    boardScr_tup_list_p = pool.map(minBeta, job_args_list)
+    boardScr_tup_list_p = ray.get([minBeta.remote(args) for args in job_args_list])
 
     boardScr_tup_list_p.sort(key=lambda tup: tup[0], reverse=True)
 
-    print(boardScr_tup_list_p)
+    print(f"move score : {boardScr_tup_list_p}")
     bestMov = boardScr_tup_list_p[0][1]
-
-#    global test_times
-#    test_times += 1
-#    if test_times > 50:
-#        os.sys.exit()
 
     return bestMov
 
 
 
 #def minBeta(board, depth, a, b, player, oppo):
+@ray.remote
 def minBeta(*args):
     """ min beta
 
@@ -205,7 +201,7 @@ def maxAlpha(*args):
         if alpha < b:
             tmpBoard = board.copyBoard()
             tmpBoard.doMov(mov, player)
-            boardScr = minBeta([tmpBoard, depth-1, alpha, b, player, oppo, mov_o])[0]
+            boardScr = ray.get(minBeta.remote([tmpBoard, depth-1, alpha, b, player, oppo, mov_o]))[0]
 
 
         if boardScr > alpha:
