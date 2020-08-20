@@ -18,4 +18,5 @@
 - [x] ai vs ai
 - [x] ai with specific level in ai vs ai mode
 - [x] ai with learning in person vs ai mode
-- [x] multiprocessing
+- [x] BIF multiprocessing by pool method
+- [ ] ray module multiprocessing

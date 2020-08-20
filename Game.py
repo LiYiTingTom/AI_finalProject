@@ -1,5 +1,4 @@
 import sys
-sys.modules['__main__'].__file__='ipython'
 import os
 import multiprocessing as mp
 from random import shuffle
@@ -105,7 +104,6 @@ def minmaxAB(board, depth, player):
     if player == 1: oppo = 2
     else: oppo = 1
 
-#    pool = mp.Pool()
     job_args_list = []
     boardScr_tup_list = []
 
@@ -116,23 +114,24 @@ def minmaxAB(board, depth, player):
         tmpBoard = board.copyBoard()
         # do the move
         tmpBoard.doMov(mov, player)
-
         job_args_list.append([tmpBoard, depth-1, alpha, beta, player, oppo, mov])
 
 #    for args in job_args_list:
 #        # call min on tmp board
 #        boardScr_tup_list.append(minBeta(args))
-#    boardScr_tup_list.sort(key=lambda tup: tup[0])
+#    boardScr_tup_list.sort(key=lambda tup: tup[0], reverse=True)
 #
 #    print(boardScr_tup_list)
 #    bestMov = boardScr_tup_list[0][1]
 
+    pool = mp.Pool()
+
     boardScr_tup_list_p = pool.map(minBeta, job_args_list)
 
-    boardScr_tup_list_p.sort(key=lambda tup: tup[0])
+    boardScr_tup_list_p.sort(key=lambda tup: tup[0], reverse=True)
 
     print(boardScr_tup_list_p)
-    bestMov = boardScr_tup_list_p[-1][1]
+    bestMov = boardScr_tup_list_p[0][1]
 
 #    global test_times
 #    test_times += 1
