@@ -18,5 +18,5 @@
 - [x] ai vs ai
 - [x] ai with specific level in ai vs ai mode
 - [x] ai with learning in person vs ai mode
-- [x] BIF multiprocessing by pool method
-- [x] ray module multiprocessing
+- [x] BIF multiprocessing by pool method(at branch: master)
+- [x] ray module multiprocessing (at branch: parallel)
