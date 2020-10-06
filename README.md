@@ -10,7 +10,7 @@
 - using multiprocessing
 
 ## How to execute
-- Run the main.py file
+- Run the main.py file (only support python3 version)
 
 ## TODO
 - [x] human vs human
