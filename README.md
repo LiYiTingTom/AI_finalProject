@@ -23,8 +23,11 @@
 
 ## Picutres
 - human vs human
+
 ![human_human](pictures/human_human.gif)
 - human vs ai
+
 ![human_ai](pictures/human_ai.gif)
 - ai vs ai
+
 ![ai](pictures/ai_ai.gif)
