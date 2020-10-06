@@ -13,10 +13,18 @@
 - Run the main.py file
 
 ## TODO
-- [x] person vs person
-- [x] person vs ai
+- [x] human vs human
+- [x] human vs ai
 - [x] ai vs ai
 - [x] ai with specific level in ai vs ai mode
 - [x] ai with learning in person vs ai mode
 - [x] BIF multiprocessing by pool method(at branch: master)
 - [x] ray module multiprocessing (at branch: ray-parallel)
+
+## Picutres
+- human vs human
+![human_human](pictures/human_human.gif)
+- human vs ai
+![human_ai](pictures/human_ai.gif)
+- ai vs ai
+![ai](pictures/ai_ai.gif)

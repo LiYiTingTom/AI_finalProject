@@ -34,7 +34,7 @@ def main():
         while humanPlay(board, 1) \
           and humanPlay(board, 2):
             rou += 1
-            print(f"round {round}")
+            #print(f"round {round}")
 
     # Human - AI
     elif mod == 1:

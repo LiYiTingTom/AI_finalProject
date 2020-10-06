@@ -1,3 +1,4 @@
+from os import system
 """ Board """
 def printRed(arg): print("\033[91m {}\033[00m" .format(arg), end="")
 def printYello(arg): print("\033[93m {}\033[00m" .format(arg), end="")
@@ -137,6 +138,7 @@ class Board():
 
 
     def drawBoard(self):
+        system('clear')
         for i in range(self._width):
             print(" %d"%i, end=" ")
         print()
